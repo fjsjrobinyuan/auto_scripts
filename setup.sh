@@ -54,6 +54,22 @@ eval "$PKG_UPDATE"
 echo "Installing essential packages..."
 eval "$PKG_INSTALL $ESSENTIAL_PACKAGES"
 
+# Additional useful tools
+DEVELOPMENT_TOOLS="cmake gdb valgrind tmux"
+NETWORK_TOOLS="net-tools iproute2 dnsutils traceroute nmap"
+SYSTEM_TOOLS="htop neofetch tree unzip zip"
+DOCKER_TOOLS="docker docker-compose"
+
+echo "Installing additional development, networking, and system tools..."
+eval "$PKG_INSTALL $DEVELOPMENT_TOOLS $NETWORK_TOOLS $SYSTEM_TOOLS $DOCKER_TOOLS"
+
+# Enable Docker if installed
+if command -v docker &> /dev/null; then
+    echo "Enabling Docker service..."
+    systemctl enable docker
+    systemctl start docker
+fi
+
 # Configure Git (prompt for user input)
 read -p "Enter your Git username: " GIT_USERNAME
 read -p "Enter your Git email: " GIT_EMAIL
