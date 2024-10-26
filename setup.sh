@@ -13,6 +13,32 @@ if [ "$(id -u)" -ne 0 ]; then
     exit 1
 fi
 
+# Determine the package manager and distro type
+if command -v apt &> /dev/null; then
+    DISTRO="debian-based"
+    PKG_UPDATE="apt update && apt upgrade -y"
+    PKG_INSTALL="apt install -y"
+    PKG_CLEAN="apt autoremove -y"
+    ESSENTIAL_PACKAGES="build-essential curl wget git vim ed nano python3 python3-pip python-is-python3"
+elif [ -f /etc/arch-release ]; then
+    DISTRO="arch"
+    PKG_UPDATE="pacman -Syu --noconfirm"
+    PKG_INSTALL="pacman -S --noconfirm"
+    PKG_CLEAN="pacman -Rns $(pacman -Qdtq)"
+    ESSENTIAL_PACKAGES="base-devel curl wget git vim ed nano python python-pip"
+elif [ -f /etc/fedora-release ]; then
+    DISTRO="fedora"
+    PKG_UPDATE="dnf update -y"
+    PKG_INSTALL="dnf install -y"
+    PKG_CLEAN="dnf autoremove -y"
+    ESSENTIAL_PACKAGES="make automake gcc gcc-c++ kernel-devel curl wget git vim ed nano python3 python3-pip"
+else
+    echo "Unsupported Linux distribution."
+    exit 1
+fi
+
+echo "Detected $DISTRO Linux. Using appropriate package manager and packages."
+
 # Check if the current user is in the sudoers file
 if ! sudo -l -U "$USERNAME" &>/dev/null; then
     echo "Adding $USERNAME to sudoers..."
@@ -22,11 +48,11 @@ fi
 
 # Update and Upgrade the system
 echo "Updating and upgrading the system..."
-apt update && apt upgrade -y
+eval "$PKG_UPDATE"
 
 # Install essential packages
 echo "Installing essential packages..."
-apt install -y build-essential curl wget git vim ed nano python3 python3-pip python-is-python3
+eval "$PKG_INSTALL $ESSENTIAL_PACKAGES"
 
 # Configure Git (prompt for user input)
 read -p "Enter your Git username: " GIT_USERNAME
@@ -39,7 +65,7 @@ su - "$USERNAME" -c "git config --global core.editor vim"
 
 # Clean up unnecessary packages
 echo "Cleaning up unnecessary packages..."
-apt autoremove -y
+eval "$PKG_CLEAN"
 
 # Set the source file and desired output name
 SOURCE_FILE="cli_helper_tool.c"
