@@ -88,6 +88,33 @@ else
     echo "vim_conf.sh not found or not executable. Please ensure vim_conf.sh is in the same directory and executable."
 fi
 
+# Run add_aliases.sh to add common aliases
+ADD_ALIASES_SCRIPT="./add_aliases.sh"
+if [ -x "$ADD_ALIASES_SCRIPT" ]; then
+    echo "Running add_aliases.sh to add custom aliases..."
+    bash "$ADD_ALIASES_SCRIPT"
+else
+    echo "add_aliases.sh not found or not executable. Please ensure add_aliases.sh is in the same directory and executable."
+fi
+
+# Run dev_setup.sh for additional developer tools
+DEV_SETUP_SCRIPT="./dev_setup.sh"
+if [ -x "$DEV_SETUP_SCRIPT" ]; then
+    echo "Running dev_setup.sh to install developer tools..."
+    bash "$DEV_SETUP_SCRIPT"
+else
+    echo "dev_setup.sh not found or not executable. Please ensure dev_setup.sh is in the same directory and executable."
+fi
+
+# Run other_system.sh for additional system tools setup
+OTHER_SYSTEM_SCRIPT="./other_system.sh"
+if [ -x "$OTHER_SYSTEM_SCRIPT" ]; then
+    echo "Running other_system.sh to configure additional system tools..."
+    bash "$OTHER_SYSTEM_SCRIPT"
+else
+    echo "other_system.sh not found or not executable. Please ensure other_system.sh is in the same directory and executable."
+fi
+
 # Clean up unnecessary packages
 echo "Cleaning up unnecessary packages..."
 eval "$PKG_CLEAN"
