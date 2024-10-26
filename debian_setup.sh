@@ -47,7 +47,7 @@ OUTPUT_NAME="cli_tools"
 
 # Compile the C code
 echo "Compiling $SOURCE_FILE..."
-gcc -o "$OUTPUT_NAME" "$SOURCE_FILE"
+gcc -o "$OUTPUT_NAME" "$SOURCE_FILE" -lm
 if [ $? -ne 0 ]; then
     echo "Compilation failed. Please check for errors in $SOURCE_FILE."
     exit 1
