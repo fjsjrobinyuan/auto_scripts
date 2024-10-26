@@ -79,6 +79,15 @@ su - "$USERNAME" -c "git config --global user.name \"$GIT_USERNAME\""
 su - "$USERNAME" -c "git config --global user.email \"$GIT_EMAIL\""
 su - "$USERNAME" -c "git config --global core.editor vim"
 
+# Run vim_conf.sh to configure Vim
+VIM_CONF_SCRIPT="./vim_conf.sh"
+if [ -x "$VIM_CONF_SCRIPT" ]; then
+    echo "Running vim_conf.sh to configure Vim settings..."
+    bash "$VIM_CONF_SCRIPT"
+else
+    echo "vim_conf.sh not found or not executable. Please ensure vim_conf.sh is in the same directory and executable."
+fi
+
 # Clean up unnecessary packages
 echo "Cleaning up unnecessary packages..."
 eval "$PKG_CLEAN"
